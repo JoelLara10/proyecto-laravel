@@ -3,7 +3,10 @@
 @section('content')
 <div class="container">
     <h1 class="mt-4">Lista de Clientes</h1>
-    <a href="{{ url('clientes/crear') }}" class="btn btn-success mb-3">Crear Nuevo Cliente</a>
+
+    @if(auth()->user()->role == 'admin')
+        <a href="{{ url('clientes/crear') }}" class="btn btn-success mb-3">Crear Nuevo Cliente</a>
+    @endif
 
     <table class="table table-bordered">
         <thead class="table-dark">
@@ -12,7 +15,9 @@
                 <th>Nombre</th>
                 <th>Email</th>
                 <th>Teléfono</th>
-                <th>Acciones</th>
+                @if(auth()->user()->role == 'admin')
+                    <th>Acciones</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -22,11 +27,13 @@
                 <td>{{ $cliente->nombre }}</td>
                 <td>{{ $cliente->email }}</td>
                 <td>{{ $cliente->telefono }}</td>
-                <td>
-                    <a href="{{ url('clientes/'.$cliente->id) }}" class="btn btn-info btn-sm">Ver</a>
-                    <a href="{{ url('clientes/'.$cliente->id.'/editar') }}" class="btn btn-warning btn-sm">Editar</a>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarCliente({{ $cliente->id }})">Eliminar</button>
-                </td>
+                @if(auth()->user()->role == 'admin')
+                    <td>
+                        <a href="{{ url('clientes/'.$cliente->id) }}" class="btn btn-info btn-sm">Ver</a>
+                        <a href="{{ url('clientes/'.$cliente->id.'/editar') }}" class="btn btn-warning btn-sm">Editar</a>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarCliente({{ $cliente->id }})">Eliminar</button>
+                    </td>
+                @endif
             </tr>
             @endforeach
         </tbody>

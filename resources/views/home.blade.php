@@ -54,13 +54,5 @@
                 </div>
             </div>
         </div>
-
-        <!-- Botón de Cerrar Sesión -->
-        <div class="mt-4 text-center">
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
-            </form>
-        </div>
     </div>
 @endsection

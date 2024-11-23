@@ -3,7 +3,11 @@
 @section('content')
 <div class="container">
     <h1 class="mt-4">Pedidos</h1>
-    <a href="{{ url('pedidos/crear') }}" class="btn btn-success mb-3">Crear Pedido</a>
+
+    @if(auth()->user()->role == 'admin')
+        <a href="{{ url('pedidos/crear') }}" class="btn btn-success mb-3">Crear Pedido</a>
+    @endif
+
     <table class="table table-bordered">
         <thead class="table-dark">
             <tr>
@@ -11,7 +15,9 @@
                 <th>Cliente</th>
                 <th>Producto</th>
                 <th>Total</th>
-                <th>Acciones</th>
+                @if(auth()->user()->role == 'admin')
+                    <th>Acciones</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -21,11 +27,13 @@
                 <td>{{ $pedido->cliente }}</td>
                 <td>{{ $pedido->producto }}</td>
                 <td>${{ number_format($pedido->total, 2) }}</td>
-                <td>
-                    <a href="{{ url('pedidos/'.$pedido->id) }}" class="btn btn-info btn-sm">Ver</a>
-                    <a href="{{ url('pedidos/'.$pedido->id.'/editar') }}" class="btn btn-warning btn-sm">Editar</a>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarPedido({{ $pedido->id }})">Eliminar</button>
-                </td>
+                @if(auth()->user()->role == 'admin')
+                    <td>
+                        <a href="{{ url('pedidos/'.$pedido->id) }}" class="btn btn-info btn-sm">Ver</a>
+                        <a href="{{ url('pedidos/'.$pedido->id.'/editar') }}" class="btn btn-warning btn-sm">Editar</a>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarPedido({{ $pedido->id }})">Eliminar</button>
+                    </td>
+                @endif
             </tr>
             @endforeach
         </tbody>
