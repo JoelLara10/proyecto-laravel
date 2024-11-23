@@ -8,6 +8,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -35,6 +36,9 @@ class UserController extends Controller
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|string',
         ]);
+
+        // Encriptar la contraseña antes de almacenarla
+        $validated['password'] = Hash::make($validated['password']);
 
         User::create($validated);
 
