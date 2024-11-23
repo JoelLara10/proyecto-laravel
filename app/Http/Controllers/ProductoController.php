@@ -62,12 +62,14 @@ class ProductoController extends Controller
 
     public function destroy($id)
     {
-        $producto = Producto::findOrFail($id);
-        $producto->delete();
+        $producto = Producto::find($id);
+        if ($producto) {
+            $producto->delete();
+            return response()->json(['message' => 'Producto eliminado con éxito']);
+        }
 
-        // Flash message para SweetAlert
-        session()->flash('success', 'Producto eliminado exitosamente.');
-
-        return redirect('productos');
+        return response()->json(['message' => 'Producto no encontrado'], 404);
     }
+
+    
 }

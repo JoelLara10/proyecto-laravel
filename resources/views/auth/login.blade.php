@@ -3,12 +3,11 @@
 @section('title', 'Login')
 
 @section('content')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h3>Iniciar sesión</h3>
-                <form method="POST" action="{{ route('login') }}">
+                <form id="user_form" method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-group">
                         <label for="email">Correo electrónico</label>
@@ -25,25 +24,29 @@
         </div>
     </div>
 
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                title: '¡Registro exitoso!',
-                text: "{{ session('success') }}",
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-            });
-        </script>
-    @endif
-
-    @if ($errors->any())
-        <script>
-            Swal.fire({
-                title: 'Errores en el inicio de sesión',
-                html: '<ul>@foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul>',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
-            });
-        </script>
-    @endif
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+      $(document).ready(function(){
+          $('#user_form').on('submit', function(event){
+              event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+              var data = $(this).serialize(); // Obtener los datos del formulario
+              var url = $(this).attr('action'); // Obtener la URL del formulario
+    
+              $.ajax({
+                  type: 'POST',
+                  url: url,
+                  data: data,
+                  success: function(response) {
+                      alert('¡Inicio de sesión exitoso!');
+                      console.log(response);
+                      window.location.href = '/home'; // Redirige a la página de inicio o a la ruta que desees
+                  },
+                  error: function(error){
+                      alert('Error al iniciar sesión');
+                      console.log(error);
+                  }
+              });
+          });
+      });
+    </script>
 @endsection

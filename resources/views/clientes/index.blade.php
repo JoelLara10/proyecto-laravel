@@ -17,7 +17,7 @@
         </thead>
         <tbody>
             @foreach($clientes as $cliente)
-            <tr>
+            <tr id="cliente-{{ $cliente->id }}">
                 <td>{{ $cliente->id }}</td>
                 <td>{{ $cliente->nombre }}</td>
                 <td>{{ $cliente->email }}</td>
@@ -25,11 +25,7 @@
                 <td>
                     <a href="{{ url('clientes/'.$cliente->id) }}" class="btn btn-info btn-sm">Ver</a>
                     <a href="{{ url('clientes/'.$cliente->id.'/editar') }}" class="btn btn-warning btn-sm">Editar</a>
-                    <form action="{{ url('clientes/'.$cliente->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                    </form>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarCliente({{ $cliente->id }})">Eliminar</button>
                 </td>
             </tr>
             @endforeach
@@ -37,4 +33,51 @@
     </table>
     {{ $clientes->links('pagination::bootstrap-4') }}
 </div>
+
+<!-- Asegúrate de incluir jQuery y SweetAlert -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function eliminarCliente(id) {
+      // Confirmación antes de eliminar
+      Swal.fire({
+          title: '¿Estás seguro?',
+          text: "¡No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminarlo',
+          cancelButtonText: 'Cancelar'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Realizar la solicitud AJAX para eliminar el cliente
+              $.ajax({
+                  type: 'POST',
+                  url: '/clientes/' + id,
+                  data: {
+                      _token: "{{ csrf_token() }}",
+                      _method: 'DELETE'  // Indicar que el método es DELETE
+                  },
+                  success: function(response) {
+                      Swal.fire(
+                          '¡Eliminado!',
+                          'El cliente ha sido eliminado.',
+                          'success'
+                      );
+                      // Eliminar la fila del cliente de la tabla
+                      $('#cliente-' + id).remove();
+                  },
+                  error: function(error) {
+                      Swal.fire(
+                          'Error',
+                          'Hubo un problema al eliminar el cliente.',
+                          'error'
+                      );
+                  }
+              });
+          }
+      });
+  }
+</script>
+
 @endsection

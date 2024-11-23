@@ -61,12 +61,13 @@ class ClienteController extends Controller
 
     public function destroy($id)
     {
-        $cliente = Cliente::findOrFail($id);
-        $cliente->delete();
+        $cliente = Cliente::find($id);
+        if ($cliente) {
+            $cliente->delete();
+            return response()->json(['message' => 'Cliente eliminado con éxito']);
+        }
 
-        // Flash message para SweetAlert
-        session()->flash('success', 'Cliente eliminado exitosamente.');
-
-        return redirect('clientes');
+        return response()->json(['message' => 'Cliente no encontrado'], 404);
     }
+
 }

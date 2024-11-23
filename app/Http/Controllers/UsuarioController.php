@@ -8,6 +8,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Usuario;
 
 class UserController extends Controller
 {
@@ -74,11 +75,14 @@ class UserController extends Controller
     }
 
     // Elimina un usuario
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        $user->delete();
-        // Flash message para SweetAlert
-        session()->flash('success', 'Usuario eliminado exitosamente.');
-        return redirect()->route('admin.usuarios.index');
+        $usuario = Usuario::find($id);
+        if ($usuario) {
+            $usuario->delete();
+            return response()->json(['message' => 'Usuario eliminado con éxito']);
+        }
+
+        return response()->json(['message' => 'Usuario no encontrado'], 404);
     }
 }

@@ -16,26 +16,69 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($productos as $producto)
-            <tr>
-                <td>{{ $producto->id }}</td>
-                <td>{{ $producto->nombre }}</td>
-                <td>{{ $producto->descripcion }}</td>
-                <td>${{ number_format($producto->precio, 2) }}</td>
-                <td>{{ $producto->stock }}</td>
-                <td>
-                    <a href="{{ url('productos/'.$producto->id) }}" class="btn btn-info btn-sm">Ver</a>
-                    <a href="{{ url('productos/'.$producto->id.'/editar') }}" class="btn btn-warning btn-sm">Editar</a>
-                    <form action="{{ url('productos/'.$producto->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
+    @foreach($productos as $producto)
+    <tr id="producto-{{ $producto->id }}">
+        <td>{{ $producto->id }}</td>
+        <td>{{ $producto->nombre }}</td>
+        <td>{{ $producto->descripcion }}</td>
+        <td>${{ number_format($producto->precio, 2) }}</td>
+        <td>{{ $producto->stock }}</td>
+        <td>
+            <a href="{{ url('productos/'.$producto->id) }}" class="btn btn-info btn-sm">Ver</a>
+            <a href="{{ url('productos/'.$producto->id.'/editar') }}" class="btn btn-warning btn-sm">Editar</a>
+            <button class="btn btn-danger btn-sm" onclick="eliminarProducto({{ $producto->id }})">Eliminar</button>
+        </td>
+    </tr>
+    @endforeach
+</tbody>
     </table>
     {{ $productos->links('pagination::bootstrap-4') }}
 </div>
+
+<!-- Asegúrate de incluir jQuery y SweetAlert -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function eliminarProducto(id) {
+      // Confirmación antes de eliminar
+      Swal.fire({
+          title: '¿Estás seguro?',
+          text: "¡No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, eliminarlo',
+          cancelButtonText: 'Cancelar'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Realizar la solicitud AJAX para eliminar el producto
+              $.ajax({
+                  type: 'POST',
+                  url: '/productos/' + id,
+                  data: {
+                      _token: "{{ csrf_token() }}",
+                      _method: 'DELETE'  // Indicar que el método es DELETE
+                  },
+                  success: function(response) {
+                      Swal.fire(
+                          '¡Eliminado!',
+                          'El producto ha sido eliminado.',
+                          'success'
+                      );
+                      // Eliminar la fila del producto de la tabla
+                      $('#producto-' + id).remove();
+                  },
+                  error: function(error) {
+                      Swal.fire(
+                          'Error',
+                          'Hubo un problema al eliminar el producto.',
+                          'error'
+                      );
+                  }
+              });
+          }
+      });
+  }
+</script>
+
 @endsection

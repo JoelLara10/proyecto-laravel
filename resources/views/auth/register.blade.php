@@ -3,12 +3,11 @@
 @section('title', 'Registro')
 
 @section('content')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h3>Registro</h3>
-                <form method="POST" action="{{ route('register') }}">
+                <form method="POST" action="{{ route('register') }}" id="user_form">
                     @csrf
                     <div class="form-group">
                         <label for="name">Nombre</label>
@@ -32,14 +31,31 @@
             </div>
         </div>
     </div>
-    @if ($errors->any())
-        <script>
-            Swal.fire({
-                title: 'Errores en el registro',
-                html: '<ul>@foreach ($errors->all() as $error) <li>{{ $error }}</li> @endforeach</ul>',
-                icon: 'error',
-                confirmButtonText: 'Aceptar'
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#user_form').on('submit', function(event){
+                event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+
+                var data = $(this).serialize(); // Obtener los datos del formulario
+                var url = $(this).attr('action'); // Obtener la URL del formulario
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    success: function(response) {
+                        alert('¡Registro exitoso!');
+                        console.log(response); 
+                        window.location.href = '/login';
+                    },
+                    error: function(error){
+                        alert('Error al enviar el formulario');
+                        console.log(error); 
+                    }
+                });
             });
-        </script>
-    @endif
+        });
+    </script>
 @endsection

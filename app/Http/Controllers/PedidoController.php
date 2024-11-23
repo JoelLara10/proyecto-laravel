@@ -62,10 +62,12 @@ class PedidoController extends Controller
 
     public function destroy($id)
     {
-        $pedido = Pedido::findOrFail($id);
-        $pedido->delete();
+        $pedido = Pedido::find($id);
+        if ($pedido) {
+            $pedido->delete();
+            return response()->json(['message' => 'Pedido eliminado con éxito']);
+        }
 
-        session()->flash('success', 'Pedido eliminado exitosamente.');
-        return redirect()->route('pedidos.index');
+        return response()->json(['message' => 'Pedido no encontrado'], 404);
     }
 }

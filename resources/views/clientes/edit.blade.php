@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="mt-4">Editar Cliente</h1>
 
-    <form action="{{ url('clientes/'.$cliente->id) }}" method="POST" class="mt-3">
+    <form id="user_form" action="{{ url('clientes/'.$cliente->id) }}" method="POST" class="mt-3">
         @csrf
         @method('PUT')
 
@@ -26,4 +26,30 @@
         <button type="submit" class="btn btn-primary">Actualizar</button>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#user_form').on('submit', function(event) {
+                event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+
+                var data = $(this).serialize(); // Obtener los datos del formulario
+                var url = $(this).attr('action'); // Obtener la URL del formulario
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    success: function(response) {
+                        alert('¡Cliente editado con exitoso!');
+                        console.log(response);
+                        window.location.href = '/clientes';
+                    },
+                    error: function(error) {
+                        alert('Error al enviar el formulario');
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

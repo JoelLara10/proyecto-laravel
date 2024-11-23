@@ -6,9 +6,8 @@
     <title>@yield('title', 'Inicio de sesión')</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
-    <!-- Incluir SweetAlert -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- AJAX -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
     @if((Route::currentRouteName() != 'login') && (Route::currentRouteName() != 'register'))
@@ -33,17 +32,5 @@
     <div class="container">
         @yield('content')
     </div>
-
-    <!-- Mostrar SweetAlert si hay mensaje de éxito -->
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                title: '¡Éxito!',
-                text: "{{ session('success') }}",
-                icon: 'success',
-                confirmButtonText: 'Aceptar'
-            });
-        </script>
-    @endif
 </body>
 </html>

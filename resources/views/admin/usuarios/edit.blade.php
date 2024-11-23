@@ -4,7 +4,7 @@
 @section('content')
 <div class="container">
     <h1>Editar Usuario</h1>
-    <form action="{{ route('admin.usuarios.update', $user->id) }}" method="POST">
+    <form id="user_form" action="{{ route('admin.usuarios.update', $user->id) }}" method="POST">
         @csrf
         @method('PUT') <!-- Importante: Usar @method('PUT') para indicar que es una actualización -->
 
@@ -30,4 +30,30 @@
         <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#user_form').on('submit', function(event){
+                event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+
+                var data = $(this).serialize(); // Obtener los datos del formulario
+                var url = $(this).attr('action'); // Obtener la URL del formulario
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: data,
+                    success: function(response) {
+                        alert('¡Usuario editado con exitoso!');
+                        console.log(response); 
+                        window.location.href = '/admin';
+                    },
+                    error: function(error){
+                        alert('Error al enviar el formulario');
+                        console.log(error); 
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

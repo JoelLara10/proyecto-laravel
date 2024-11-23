@@ -16,14 +16,22 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        
-        if (Auth::attempt($credentials)) {
-            return redirect()->route('home');
+        // Validación de los datos del formulario
+        $validated = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        // Intentar autenticar al usuario
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            // Si la autenticación es exitosa
+            return response()->json(['success' => 'Inicio de sesión exitoso'], 200);
         }
 
-        return back()->withErrors(['email' => 'Credenciales incorrectas']);
+        // Si las credenciales son incorrectas
+        return response()->json(['error' => 'Credenciales incorrectas'], 422);
     }
+
 
     public function showRegistrationForm()
     {
@@ -44,7 +52,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('login')->with('success', 'Registro exitoso. Por favor, inicia sesión.');
+        return redirect()->route('login')->with('success', ' Por favor, inicia sesión.');
     }
 
 

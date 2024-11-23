@@ -75,11 +75,14 @@ class UserController extends Controller
 
 
     // Elimina un usuario
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        $user->delete();
-        // Flash message para SweetAlert
-        session()->flash('success', 'Usuario eliminado exitosamente.');
-        return redirect()->route('admin.usuarios.index');
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return response()->json(['message' => 'Usuario eliminado con éxito']);
+        }
+
+        return response()->json(['message' => 'Usuario no encontrado'], 404);
     }
 }
